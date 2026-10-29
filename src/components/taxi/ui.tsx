@@ -40,7 +40,7 @@ export function Status({ tone, children }: { tone: "info" | "success" | "warning
 
 /** Static street map with pins. Positions in % of the map box. */
 export function StaticMap({ origin, dest, car, route, draggableOrigin, onOriginMove }: {
-  origin?: [number, number]; dest?: [number, number]; car?: [number, number]; route?: [number, number][];
+  origin?: [number, number] | undefined; dest?: [number, number] | undefined; car?: [number, number] | undefined; route?: [number, number][] | undefined;
   draggableOrigin?: boolean; onOriginMove?: (p: [number, number]) => void;
 }) {
   const handle = (e: React.PointerEvent<HTMLDivElement>) => {
