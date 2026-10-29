@@ -21,4 +21,4 @@ export const makeOffers = (p: number): Offer[] => [
   { id: 3, name: "Luis Ccori", photo: "LC", rating: 4.6, car: "Kia Rio", color: "Rojo", plate: "PAS-903", eta: 2, price: p + 2 },
 ];
 export const soles = (n: number) => `S/ ${n.toFixed(2)}`;
-export const START: [number, number] = [45, 62];
+export const START: [number, number] = [42, 40];
