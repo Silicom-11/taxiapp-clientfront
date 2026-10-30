@@ -14,11 +14,44 @@ export const SAVED: Place[] = [
   { name: "Trabajo", detail: "Av. El Minero 1020", pos: [76, 60], km: 2.9, min: 9, price: 7 },
 ];
 
-export type Offer = { id: number; name: string; photo: string; rating: number; car: string; color: string; plate: string; eta: number; price: number };
-export const makeOffers = (p: number): Offer[] => [
-  { id: 1, name: "Jorge Quispe", photo: "JQ", rating: 4.9, car: "Toyota Yaris", color: "Blanco", plate: "PAS-482", eta: 3, price: p },
-  { id: 2, name: "Rosa Huamán", photo: "RH", rating: 4.8, car: "Hyundai Accent", color: "Plata", plate: "PAS-127", eta: 5, price: p + 1 },
-  { id: 3, name: "Luis Ccori", photo: "LC", rating: 4.6, car: "Kia Rio", color: "Rojo", plate: "PAS-903", eta: 2, price: p + 2 },
+export type Review = { name: string; stars: number; text: string };
+export type Offer = {
+  id: number; name: string; photo: string; rating: number; trips: number; phone: string;
+  car: string; color: string; plate: string; seats: number; eta: number; price: number; reviews: Review[];
+};
+
+// Mismo PIN de demo que la vista del conductor (Vista_Del_Conductor_V1: const PIN = "4821").
+export const PIN_START = "4821";
+// PIN de fin: el pasajero lo dicta después de pagar y el conductor lo ingresa para cerrar el viaje.
+export const PIN_END = "3590";
+export const SUPPORT_PHONE = "987654321";
+// Centro de Cerro de Pasco, para el enlace de ubicación de emergencia.
+export const DEMO_LOCATION = "-10.6833,-76.2563";
+
+const DRIVERS: Omit<Offer, "price">[] = [
+  { id: 1, name: "Jorge Quispe", photo: "JQ", rating: 4.9, trips: 412, phone: "987123456", car: "Toyota Yaris", color: "Blanco", plate: "W1A-482", seats: 4, eta: 3,
+    reviews: [{ name: "Lucía P.", stars: 5, text: "Muy amable y puntual." }, { name: "Andrés M.", stars: 5, text: "Manejó con cuidado." }, { name: "Rosa T.", stars: 4, text: "Buen viaje, auto limpio." }] },
+  { id: 2, name: "Rosa Huamán", photo: "RH", rating: 4.8, trips: 268, phone: "965330118", car: "Hyundai Accent", color: "Plata", plate: "W2B-127", seats: 4, eta: 5,
+    reviews: [{ name: "Carlos R.", stars: 5, text: "Llegó rápido al recojo." }, { name: "María Q.", stars: 4, text: "Todo bien." }] },
+  { id: 3, name: "Luis Ccori", photo: "LC", rating: 4.6, trips: 95, phone: "921447063", car: "Kia Rio", color: "Rojo", plate: "W3K-903", seats: 4, eta: 2,
+    reviews: [{ name: "Jorge L.", stars: 4, text: "Buen servicio, música algo fuerte." }] },
+  { id: 4, name: "Pedro Ríos", photo: "PR", rating: 4.7, trips: 183, phone: "954112870", car: "Toyota Avanza", color: "Gris", plate: "W4C-215", seats: 6, eta: 7,
+    reviews: [{ name: "Familia T.", stars: 5, text: "Entramos los seis con maletas." }, { name: "Ana V.", stars: 4, text: "Puntual." }] },
 ];
+
+// Solo ofertan los autos con asientos suficientes para todos los pasajeros.
+export const makeOffers = (p: number, pax: number): Offer[] =>
+  DRIVERS.filter((d) => d.seats >= pax).map((d, i) => ({ ...d, price: p + ([0, 1, 2, 1][i % 4] ?? 0) }));
+// En la demo, Luis Ccori acaba de tomar otro viaje: muestra el error de la condición de carrera.
+export const TAKEN_ID = 3;
+
+export type Trip = { date: string; from: string; to: string; price: number; driver: string; status: "Finalizado" | "Cancelado" | "En revisión" };
+export const HISTORY: Trip[] = [
+  { date: "28/10 · 19:40", from: "Jr. Lima", to: "Terminal Terrestre", price: 8, driver: "Rosa Huamán", status: "Finalizado" },
+  { date: "26/10 · 08:15", from: "Casa", to: "Universidad Daniel A. Carrión", price: 10, driver: "Jorge Quispe", status: "Finalizado" },
+  { date: "24/10 · 21:05", from: "Parque Minero", to: "Casa", price: 6, driver: "Luis Ccori", status: "Cancelado" },
+];
+
 export const soles = (n: number) => `S/ ${n.toFixed(2)}`;
 export const START: [number, number] = [42, 40];
+export const waLink = (phone: string, text: string) => `https://wa.me/51${phone}?text=${encodeURIComponent(text)}`;

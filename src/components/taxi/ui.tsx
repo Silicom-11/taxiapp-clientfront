@@ -1,17 +1,47 @@
-import type { ButtonHTMLAttributes, ReactNode, InputHTMLAttributes } from "react";
-import { Car, Navigation } from "lucide-react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode, InputHTMLAttributes } from "react";
+import { ArrowLeft, Car, Navigation, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type BtnVariant = "primary" | "secondary" | "danger" | "ghost" | "accent";
+type BtnVariant = "primary" | "secondary" | "danger" | "ghost" | "accent" | "sos";
 const btn: Record<BtnVariant, string> = {
   primary: "bg-primary text-primary-foreground font-semibold active:bg-primary-deep disabled:opacity-40",
-  secondary: "border-2 border-primary bg-card text-primary-deep font-semibold",
+  secondary: "border-2 border-primary bg-card text-primary-deep font-semibold disabled:opacity-40",
   danger: "text-destructive font-semibold",
   ghost: "text-primary-deep font-medium",
   accent: "bg-accent text-accent-foreground font-semibold",
+  sos: "bg-destructive text-destructive-foreground font-semibold disabled:opacity-40",
 };
+const btnBase = "flex h-[52px] w-full items-center justify-center gap-2 rounded-xl text-base transition-colors";
 export function Btn({ variant = "primary", className, ...p }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: BtnVariant }) {
-  return <button {...p} className={cn("flex h-[52px] w-full items-center justify-center gap-2 rounded-xl text-base transition-colors", btn[variant], className)} />;
+  return <button {...p} className={cn(btnBase, btn[variant], className)} />;
+}
+/** Botón que abre un enlace externo: WhatsApp (wa.me) o el marcador del celular (tel:). */
+export function LinkBtn({ variant = "primary", className, ...p }: AnchorHTMLAttributes<HTMLAnchorElement> & { variant?: BtnVariant }) {
+  return <a target="_blank" rel="noreferrer" {...p} className={cn(btnBase, btn[variant], className)} />;
+}
+
+export function Top({ back, title }: { back?: (() => void) | undefined; title?: string | undefined }) {
+  return <div className="flex h-14 shrink-0 items-center gap-2 px-2">
+    {back && <button onClick={back} aria-label="Volver" className="flex h-12 w-12 items-center justify-center rounded-full"><ArrowLeft className="h-6 w-6" /></button>}
+    {title && <h2 className="text-lg font-semibold">{title}</h2>}
+  </div>;
+}
+export function Page({ children }: { children: ReactNode }) { return <div className="flex h-full flex-col">{children}</div>; }
+export function Label({ children, className }: { children: ReactNode; className?: string }) {
+  return <p className={cn("mt-4 mb-2 text-sm font-semibold", className)}>{children}</p>;
+}
+
+export function Avatar({ text, size = "h-12 w-12" }: { text: string; size?: string }) {
+  return <div className={cn("flex shrink-0 items-center justify-center rounded-full bg-primary-deep font-semibold text-primary-foreground", size)}>{text}</div>;
+}
+
+export function Modal({ title, children, close }: { title: string; children: ReactNode; close: () => void }) {
+  return <div className="absolute inset-0 z-40 flex items-end bg-foreground/40" onClick={close}>
+    <div className="max-h-[90%] w-full overflow-y-auto rounded-t-[20px] bg-card p-4 pb-6" onClick={(e) => e.stopPropagation()}>
+      <div className="mb-2 flex items-center justify-between"><h3 className="text-lg font-semibold">{title}</h3><button aria-label="Cerrar" onClick={close} className="flex h-10 w-10 items-center justify-center"><X className="h-5 w-5" /></button></div>
+      {children}
+    </div>
+  </div>;
 }
 
 export function Field({ className, ...p }: InputHTMLAttributes<HTMLInputElement>) {
